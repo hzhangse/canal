@@ -22,7 +22,7 @@ data:
     # tcp, kafka, RocketMQ
     canal.serverMode = kafka
     # flush meta cursor/parse position to file
-    canal.file.data.dir = ${canal.conf.dir}
+    canal.file.data.dir = /home/admin/canal-server/tsdb
     canal.file.flush.period = 1000
    
     # aliyun ak/sk , support rds/mq
@@ -306,15 +306,15 @@ spec:
         - name: canal-instance-configmap
           mountPath: /home/admin/canal-server/conf/uac0/instance.properties  
           subPath: path/to/uac0.instance.properties
-#        - name: canal-instance-configmap
-#          mountPath: /home/admin/canal-server/conf/uac1/instance.properties  
-#          subPath: path/to/uac1.instance.properties
-#        - name: canal-instance-configmap
-#          mountPath: /home/admin/canal-server/conf/udc0/instance.properties  
-#          subPath: path/to/udc0.instance.properties
-#        - name: canal-instance-configmap
-#          mountPath: /home/admin/canal-server/conf/udc1/instance.properties  
-#          subPath: path/to/udc1.instance.properties
+        - name: canal-instance-configmap
+          mountPath: /home/admin/canal-server/conf/uac1/instance.properties  
+          subPath: path/to/uac1.instance.properties
+        - name: canal-instance-configmap
+          mountPath: /home/admin/canal-server/conf/udc0/instance.properties  
+          subPath: path/to/udc0.instance.properties
+        - name: canal-instance-configmap
+          mountPath: /home/admin/canal-server/conf/udc1/instance.properties  
+          subPath: path/to/udc1.instance.properties
         - name: canal-instance-configmap
           mountPath: /home/admin/canal-server/conf/canal.properties  
           subPath: path/to/canal.properties              
