@@ -50,7 +50,7 @@ data:
     #########          MQ          #############
     ##################################################
      
-    canal.serverMode = kafka
+    
     canal.mq.servers = paascloud-kafka:9092
     canal.mq.retries = 3
     canal.mq.batchSize = 16384
@@ -77,7 +77,7 @@ data:
     #canal.mq.partition=0
     canal.mq.properties.enable.idempotence=true
     # hash partition config
-    canal.mq.partitionsNum=5
+    canal.mq.partitionsNum=12
     canal.mq.partitionHash= paascloud.*\\.pc_uac.*:login_name, \
                   paascloud.*\\.pc_udc_family:id,    \
                 paascloud.*\\.pc_udc_room:family_id, \
