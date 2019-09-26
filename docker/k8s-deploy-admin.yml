@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paascloud-canal-server
+#  namespace: zhanghong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paascloud-canal-server
+  template:
+    metadata:
+      labels:
+        app: paascloud-canal-server
+    spec:
+#      nodeSelector:
+#        paascloud_kafka: default
+      nodeName: okd-node-2     
+      imagePullSecrets:
+      - name: secret-aliyuncs
+      containers:
+      - name: paascloud-canal-server
+        image: canal/canal-server:v1.1.4
+        imagePullPolicy: Always
+#        2222 sys , 8000 debug , 11111 canal , 11112 metrics
+        ports:
+        - containerPort: 11111
+          name: canal
+        - containerPort: 8000
+          name: debug
+        - containerPort: 11112
+          name: metrics
+        - containerPort: 2222
+          name:  sys                   
+        env:
+        - name: canal.id
+          value: '1'                  
+        - name: canal.zkServers
+          value: 'paascloud-provider-zk:2181'   
+        - name: canal.serverMode
+          value: 'kafka'
+#        envFrom:
+#        - configMapRef:
+#            name: canal-instance-properties        
+                                  
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: paascloud-canal-server
+#  namespace: zhanghong
+spec:
+  selector:
+    app: paascloud-canal-server
+  ports:
+  - protocol: TCP
+    port: 11111
+    targetPort: 11111
+
+
+          
