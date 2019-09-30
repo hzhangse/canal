@@ -1,0 +1,164 @@
+kind: ConfigMap
+metadata:
+  name: canal-env
+  labels:
+    app: canal-env
+apiVersion: v1
+data:
+  # canal admin config
+  canal.admin.manager: paascloud-canal-admin:8089
+  canal.admin.port: '11110'
+  canal.admin.user: admin
+  canal.admin.passwd: 4ACFE3202A5FF5CF467898FC58AAB1D615029441
+  # admin auto register
+  canal.admin.register.auto: 'true'
+  canal.admin.register.cluster: iotbull-canal 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paascloud-canal-server
+#  namespace: saas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: paascloud-canal-server
+  template:
+    metadata:
+      labels:
+        app: paascloud-canal-server
+    spec:
+#      nodeSelector:
+#        paascloud_kafka: default
+      nodeName: okd-node-4     
+      imagePullSecrets:
+      - name: secret-aliyuncs
+      containers:
+      - name: paascloud-canal-server
+        image: canal/canal-server:v1.1.4
+        imagePullPolicy: Always
+#        2222 sys , 8000 debug , 11111 canal , 11112 metrics
+        ports:
+        - containerPort: 11111
+          name: canal
+        - containerPort: 11112
+          name: metrics
+        - containerPort: 11110
+          name: admin          
+        - containerPort: 2222
+          name:  sys                   
+        env:
+        - name: canal.admin.manager
+          value: 'paascloud-canal-admin:8089'           
+        envFrom:
+        - configMapRef:
+            name: canal-env        
+        volumeMounts: 
+        - name: canal-server-logs
+          mountPath: /home/admin/canal-server/logs  
+        securityContext:
+          privileged: true       
+      volumes:       
+      - name: canal-server-logs 
+        hostPath:
+          path: /canal-server-logs                                    
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: paascloud-canal-server
+#  namespace: zhanghong
+spec:
+  selector:
+    app: paascloud-canal-server
+  ports:
+  - protocol: TCP
+    port: 11111
+    targetPort: 11111
+    name: server
+  - protocol: TCP
+    port: 11110
+    targetPort: 11110
+    name: admin    
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paascloud-canal-admin
+#  namespace: zhanghong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paascloud-canal-admin
+  template:
+    metadata:
+      labels:
+        app: paascloud-canal-admin
+    spec:
+#      nodeSelector:
+#        paascloud_kafka: default
+      nodeName: okd-node-4     
+      imagePullSecrets:
+      - name: secret-aliyuncs
+      containers:
+      - name: paascloud-canal-admin
+        image: canal/canal-admin:v1.1.4
+        imagePullPolicy: Always
+#        2222 sys , 8000 debug , 11111 canal , 11112 metrics
+        ports:
+        - containerPort: 8089
+          name: server
+        - containerPort: 11110
+          name: admin          
+                 
+        env:
+        - name: 'server.port'
+          value: '8089'    
+        - name: 'canal.adminUser'
+          value: 'admin'    
+        - name: 'canal.adminPasswd'
+          value: 'admin'    
+        - name: 'spring.datasource.address'
+          value: 'paascloud-db-mysql.zhanghong:3306'   
+        - name: 'spring.datasource.database'
+          value: 'canal_manager'           
+        - name: 'spring.datasource.username'
+          value: 'root'  
+        - name: 'spring.datasource.password'
+          value: 'root'                                                            
+        volumeMounts: 
+        - name: canal-admin-logs
+          mountPath: /home/admin/canal-admin/logs
+        securityContext:
+          privileged: true       
+      volumes:       
+      - name: canal-admin-logs 
+        hostPath:
+          path: /canal-admin-logs                                     
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: paascloud-canal-admin
+#  namespace: zhanghong
+spec:
+  selector:
+    app: paascloud-canal-admin
+  ports:
+  - protocol: TCP
+    port: 8089
+    targetPort: 8089
+    name: server
+  - protocol: TCP
+    port: 11110
+    targetPort: 11110
+    name: admin    
+    
+   
+   

@@ -2,145 +2,138 @@ kind: ConfigMap
 metadata:
   name: canal-env
   labels:
-    app: mysql
+    app: canal-env
 apiVersion: v1
 data:
   # canal admin config
-  canal.admin.manager: 10.128.2.80:8089
-  canal.admin.port: 11110
+  canal.admin.manager: paascloud-canal-admin:8089
+  canal.admin.port: '11110'
   canal.admin.user: admin
   canal.admin.passwd: 4ACFE3202A5FF5CF467898FC58AAB1D615029441
   # admin auto register
-  canal.admin.register.auto: true
-  canal.admin.register.cluster: 
-
-
+  canal.admin.register.auto: 'true'
+  canal.admin.register.cluster: iotbull-canal
+ 
   #################################################
   #########     destinations    #############
   #################################################
-  canal.destinations: 
+  # canal.destinations: 
   # conf root dir
   canal.conf.dir: ../conf
   # auto scan instance dir add/remove and start/stop instance
-  canal.auto.scan: true
-  canal.auto.scan.interval: 5
+  canal.auto.scan: 'true'
+  canal.auto.scan.interval: '5'
   
   canal.instance.global.mode: spring
-  canal.instance.global.lazy: false
+  canal.instance.global.lazy: 'false'
   canal.instance.global.manager.address: ${canal.admin.manager}  
   #canal.instance.global.spring.xml = classpath:spring/memory-instance.xml
   #canal.instance.global.spring.xml = classpath:spring/file-instance.xml  
   canal.instance.global.spring.xml: classpath:spring/default-instance.xml  
 
-    
   #################################################
   #########     common argument   #############
   #################################################
-  canal.id: 
-  canal.ip:
-  canal.port: 11111
-  canal.metrics.pull.port: 11112
+  #canal.id: 
+  #canal.ip:
+  canal.port: '11111'
+  canal.metrics.pull.port: '11112'
   canal.zkServers: paascloud-provider-zk:2181
   # flush data to zk
-  canal.zookeeper.flush.period: 1000
-  canal.withoutNetty: false
+  canal.zookeeper.flush.period: '1000'
+  canal.withoutNetty: 'false'
   ## memory store RingBuffer size, should be Math.pow(2,n)
-  canal.instance.memory.buffer.size: 16384
+  canal.instance.memory.buffer.size: '16384'
   ## memory store RingBuffer used memory unit size , default 1kb
-  canal.instance.memory.buffer.memunit: 1024 
+  canal.instance.memory.buffer.memunit: '1024' 
   ## meory store gets mode used MEMSIZE or ITEMSIZE
   canal.instance.memory.batch.mode: MEMSIZE
   ## detecing config
-  canal.instance.detecting.enable: false
+  canal.instance.detecting.enable: 'false'
   #canal.instance.detecting.sql = insert into retl.xdual values(1,now()) on duplicate key update x=now()
   canal.instance.detecting.sql: select 1
-  canal.instance.detecting.interval.time: 3
-  canal.instance.detecting.retry.threshold: 3
-  canal.instance.detecting.heartbeatHaEnable: false
+  canal.instance.detecting.interval.time: '3'
+  canal.instance.detecting.retry.threshold: '3'
+  canal.instance.detecting.heartbeatHaEnable: 'false'
   # network config
-  canal.instance.network.receiveBufferSize: 16384
-  canal.instance.network.sendBufferSize: 16384
-  canal.instance.network.soTimeout: 30
+  canal.instance.network.receiveBufferSize: '16384'
+  canal.instance.network.sendBufferSize: '16384'
+  canal.instance.network.soTimeout: '30'
   # support maximum transaction size, more than the size of the transaction will be cut into multiple transactions delivery
-  canal.instance.transaction.size: 1024
+  canal.instance.transaction.size: '1024'
   # mysql fallback connected to new master should fallback times
-  canal.instance.fallbackIntervalInSeconds: 60  
+  canal.instance.fallbackIntervalInSeconds: '60'  
 
   # binlog filter config
-  canal.instance.filter.druid.ddl: true
-  canal.instance.filter.query.dcl: false
-  canal.instance.filter.query.dml: false
-  canal.instance.filter.query.ddl: false
-  canal.instance.filter.table.error: false
-  canal.instance.filter.rows: false
-  canal.instance.filter.transaction.entry: false
+  canal.instance.filter.druid.ddl: 'true'
+  canal.instance.filter.query.dcl: 'false'
+  canal.instance.filter.query.dml: 'false'
+  canal.instance.filter.query.ddl: 'false'
+  canal.instance.filter.table.error: 'false'
+  canal.instance.filter.rows: 'false'
+  canal.instance.filter.transaction.entry: 'false'
 
   # binlog format/image check
   canal.instance.binlog.format: ROW,STATEMENT,MIXED 
   canal.instance.binlog.image: FULL,MINIMAL,NOBLOB
 
   # binlog ddl isolation
-  canal.instance.get.ddl.isolation: false
+  canal.instance.get.ddl.isolation: 'false'
 
   # parallel parser config
-  canal.instance.parser.parallel: true
+  canal.instance.parser.parallel: 'true'
   ## concurrent thread number, default 60% available processors, suggest not to exceed Runtime.getRuntime().availableProcessors()
   #canal.instance.parser.parallelThreadSize = 16
   ## disruptor ringbuffer size, must be power of 2
-  canal.instance.parser.parallelBufferSize: 256 
+  canal.instance.parser.parallelBufferSize: '256' 
   # tcp, kafka, RocketMQ
   canal.serverMode: kafka
   # flush meta cursor/parse position to file
   canal.file.data.dir: /home/admin/canal-server/tsdb
-  canal.file.flush.period: 1000
+  canal.file.flush.period: '1000'
   # table meta tsdb info
   canal.instance.tsdb.spring.xml: classpath:spring/tsdb/h2-tsdb.xml
   #canal.instance.tsdb.spring.xml = classpath:spring/tsdb/mysql-tsdb.xml  
-  canal.instance.tsdb.enable: true
+  canal.instance.tsdb.enable: 'true'
   canal.instance.tsdb.dir: ${canal.file.data.dir:../conf}/${canal.instance.destination:}
   canal.instance.tsdb.url: jdbc:h2:${canal.instance.tsdb.dir}/h2;CACHE_SIZE=1000;MODE=MYSQL;
   canal.instance.tsdb.dbUsername: canal
   canal.instance.tsdb.dbPassword: canal
   # dump snapshot interval, default 24 hour
-  canal.instance.tsdb.snapshot.interval: 24
+  canal.instance.tsdb.snapshot.interval: '24'
   # purge snapshot expire , default 360 hour(15 days)
-  canal.instance.tsdb.snapshot.expire: 360
+  canal.instance.tsdb.snapshot.expire: '360'
   ##################################################
   #########          MQ          #############
   ##################################################
   canal.mq.servers: paascloud-kafka:9092
-  canal.mq.retries: 3
-  canal.mq.batchSize: 16384
-  canal.mq.maxRequestSize: 1048576
-  canal.mq.lingerMs: 100
-  canal.mq.bufferMemory: 33554432
-  canal.mq.canalBatchSize: 50
-  canal.mq.canalGetTimeout: 100
-  canal.mq.flatMessage: true
+  canal.mq.retries: '3'
+  canal.mq.batchSize: '16384'
+  canal.mq.maxRequestSize: '1048576'
+  canal.mq.lingerMs: '100'
+  canal.mq.bufferMemory: '33554432'
+  canal.mq.canalBatchSize: '50'
+  canal.mq.canalGetTimeout: '100'
+  canal.mq.flatMessage: 'true'
   canal.mq.compressionType: none
   canal.mq.acks: all
   #canal.mq.properties. =
   canal.mq.producerGroup: canal-producer
-  canal.mq.transaction: false
+  canal.mq.transaction: 'false'
   # Set this value to "cloud", if you want open message trace feature in aliyun.
   canal.mq.accessChannel: local
-  # aliyun mq namespace
-  #canal.mq.namespace =   
-  # mq config
-  #canal.mq.topic=example
   # dynamic topic route by schema or table regex
   canal.mq.dynamicTopic: paascloud.*\\.pc.*
   #canal.mq.partition=0
-  canal.mq.properties.enable.idempotence: true
+  canal.mq.properties.enable.idempotence: 'true'
   # hash partition config
-  canal.mq.partitionsNum: 12
+  canal.mq.partitionsNum: '12'
   canal.mq.partitionHash: paascloud.*\\.pc_uac.*:login_name, \
                           paascloud.*\\.pc_udc_family:id,    \
                           paascloud.*\\.pc_udc_room:family_id, \
                           paascloud.*\\.pc_udc_room_device:room_id , \
                           paascloud.*\\.pc_udc_user_family:family_id, \
                           paascloud.*\\.pc_udc_user_extend_info:user_id 
-
 
 ---
 apiVersion: apps/v1
@@ -179,15 +172,19 @@ spec:
           name:  sys                   
         env:
         - name: canal.admin.manager
-          value: '10.128.2.80'  
-          
+          value: 'paascloud-canal-admin:8089'           
         envFrom:
         - configMapRef:
             name: canal-env        
+        volumeMounts: 
+        - name: canal-server-logs
+          mountPath: /home/admin/canal-server/logs  
+        securityContext:
+          privileged: true       
       volumes:       
-      - name: canal-logs 
+      - name: canal-server-logs 
         hostPath:
-          path: /canal-logs                                   
+          path: /canal-server-logs                                    
 
 ---
 kind: Service
@@ -202,10 +199,87 @@ spec:
   - protocol: TCP
     port: 11111
     targetPort: 11111
+    name: server
   - protocol: TCP
     port: 11110
-    targetPort: 11110    
+    targetPort: 11110
+    name: admin    
     
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paascloud-canal-admin
+  namespace: zhanghong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paascloud-canal-admin
+  template:
+    metadata:
+      labels:
+        app: paascloud-canal-admin
+    spec:
+#      nodeSelector:
+#        paascloud_kafka: default
+      nodeName: okd-node-4     
+      imagePullSecrets:
+      - name: secret-aliyuncs
+      containers:
+      - name: paascloud-canal-admin
+        image: canal/canal-admin:v1.1.4
+        imagePullPolicy: Always
+#        2222 sys , 8000 debug , 11111 canal , 11112 metrics
+        ports:
+        - containerPort: 8089
+          name: server
+        - containerPort: 11110
+          name: admin          
+                 
+        env:
+        - name: 'server.port'
+          value: '8089'    
+        - name: 'canal.adminUser'
+          value: 'admin'    
+        - name: 'canal.adminPasswd'
+          value: 'admin'    
+        - name: 'spring.datasource.address'
+          value: 'paascloud-db-mysql.zhanghong:3306'   
+        - name: 'spring.datasource.database'
+          value: 'canal_manager'           
+        - name: 'spring.datasource.username'
+          value: 'root'  
+        - name: 'spring.datasource.password'
+          value: 'root'                                                            
+        volumeMounts: 
+        - name: canal-admin-logs
+          mountPath: /home/admin/canal-admin/logs
+        securityContext:
+          privileged: true       
+      volumes:       
+      - name: canal-admin-logs 
+        hostPath:
+          path: /canal-admin-logs                                     
 
-
-          
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: paascloud-canal-admin
+  namespace: zhanghong
+spec:
+  selector:
+    app: paascloud-canal-admin
+  ports:
+  - protocol: TCP
+    port: 8089
+    targetPort: 8089
+    name: server
+  - protocol: TCP
+    port: 11110
+    targetPort: 11110
+    name: admin    
+    
+   
+   
